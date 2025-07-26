@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harsh Singh Kshetrimayum - Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* Dark background for spotlight effect */
+            color: #f3f4f6;
+            /* --- START: Content Protection & Layout Fix --- */
+            overflow-x: hidden; /* Prevents horizontal scrollbars on mobile */
+            -webkit-user-select: none; /* Safari */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* IE */
+            user-select: none; /* Standard */
+            /* --- END: Content Protection & Layout Fix --- */
+        }
+        img {
+            pointer-events: none; /* Disables drag-and-drop saving */
+        }
+        .section {
+            scroll-margin-top: 72px; /* Adjust for fixed header height */
+        }
+
+        /* --- Cursor Spotlight Effect --- */
+        #cursor-spotlight {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(79, 70, 229, 0.15), transparent 60%);
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s ease-in-out, height 0.3s ease-in-out;
+            z-index: 9999;
+        }
+        
+        /* --- Project Card 3D Hover Animation --- */
+        .project-card-interactive {
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+        .project-card-interactive:hover {
+            transform: perspective(1000px) rotateY(-8deg) rotateX(4deg) scale(1.05);
+            box-shadow: 0 25px 50px -12px rgba(79, 70, 229, 0.3);
+        }
+
+        /* --- Photo 3D Effect --- */
+        .photo-interactive {
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
+        }
+        .photo-interactive:hover {
+            transform: perspective(1000px) rotateY(-8deg) rotateX(4deg) scale(1.05);
+            box-shadow: 0 25px 50px -12px rgba(79, 70, 229, 0.35);
+        }
+
+        /* --- Gentle Floating Skills Animation --- */
+        @keyframes float-gentle {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+        .animate-float-gentle {
+            animation: float-gentle 8s ease-in-out infinite;
+        }
+        .skill-tag-interactive {
+            transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .skill-tag-interactive:hover, .skill-tag-interactive.is-active {
+            transform: perspective(1000px) rotateY(-10deg) rotateX(5deg) scale(1.2) !important;
+            background-color: #1f2937;
+            box-shadow: 0 15px 30px -10px rgba(79, 70, 229, 0.3);
+        }
+        
+        /* --- Elegant Text Reveal Animation --- */
+        @keyframes fade-in-up {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-fade-in-up {
+            animation: fade-in-up 1s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            opacity: 0; /* Start hidden */
+        }
+
+        /* --- Skill Pie Chart SVG Animation --- */
+        #skill-progress-circle {
+            transition: stroke-dashoffset 1s cubic-bezier(0.6, 0.04, 0.98, 0.335);
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+        
+        /* --- Skill Icon Styling --- */
+        .skill-icon {
+            filter: invert(90%) sepia(8%) saturate(92%) hue-rotate(185deg) brightness(95%) contrast(85%);
+            transition: filter 0.3s ease;
+        }
+        .skill-tag-interactive:hover .skill-icon, .skill-tag-interactive.is-active .skill-icon {
+            filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg) brightness(102%) contrast(102%);
+        }
+
+        /* --- Hero Background Animation --- */
+        #hero-bg-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.3;
+        }
+        #home .z-10 { /* Ensure text is above the animation */
+            z-index: 10;
+        }
+
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100">
+
+    <div id="cursor-spotlight"></div>
+
+    <header class="bg-gray-900/80 backdrop-blur-sm fixed top-0 left-0 right-0 z-50">
+        <div class="container mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold text-white flex items-center">✌🏻 HSKSH</a>
+            <nav class="hidden md:flex space-x-8">
+                <a href="#about" class="hover:text-indigo-400 transition-colors">About</a>
+                <a href="#experience" class="hover:text-indigo-400 transition-colors">Experience</a>
+                <a href="#projects" class="hover:text-indigo-400 transition-colors">Projects</a>
+                <a href="#skills" class="hover:text-indigo-400 transition-colors">Skills</a>
+                <a href="#contact" class="hover:text-indigo-400 transition-colors">Contact</a>
+            </nav>
+            <button id="mobile-menu-button" class="md:hidden focus:outline-none text-white p-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-gray-900/80 md:bg-transparent px-4 sm:px-6 pb-4">
+            <a href="#about" class="block py-2 hover:text-indigo-400 transition-colors">About</a>
+            <a href="#experience" class="block py-2 hover:text-indigo-400 transition-colors">Experience</a>
+            <a href="#projects" class="block py-2 hover:text-indigo-400 transition-colors">Projects</a>
+            <a href="#skills" class="block py-2 hover:text-indigo-400 transition-colors">Skills</a>
+            <a href="#contact" class="block py-2 hover:text-indigo-400 transition-colors">Contact</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 pt-24">
+
+        <section id="home" class="min-h-screen flex items-center justify-center md:justify-start relative">
+            <div id="hero-bg-animation"></div>
+            <div class="relative z-10 w-full text-center md:text-left md:ml-12 lg:ml-24 xl:ml-48">
+                <p class="text-indigo-400 text-lg font-medium animate-fade-in-up" style="animation-delay: 100ms;">Hi, my name is</p>
+                <h1 class="text-4xl sm:text-5xl md:text-7xl font-bold mt-2 text-white animate-fade-in-up break-words" style="animation-delay: 250ms;">Harsh Singh Kshetrimayum.</h1>
+                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold mt-3 text-gray-400 animate-fade-in-up" style="animation-delay: 400ms;">I build innovative digital solutions.</h2>
+                <p class="mt-6 max-w-2xl text-gray-300 animate-fade-in-up mx-auto md:mx-0" style="animation-delay: 550ms;">
+                    I'm a technology professional with a strong passion for Web Development, Artificial Intelligence, Cybersecurity and UI/UX Designing. My objective is to apply my knowledge to build secure, innovative solutions and grow as a versatile developer.
+                </p>
+                <div class="mt-8 flex flex-wrap gap-4 justify-center md:justify-start animate-fade-in-up" style="animation-delay: 700ms;">
+                    <a href="MY RESUME.docx" class="bg-indigo-800 hover:bg-indigo-900 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300">View My Resume</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="section py-20">
+            <h2 class="text-3xl font-bold text-center mb-12 text-white" data-aos="fade-up"><u>About Me</u></h2>
+            <div class="flex flex-col md:flex-row items-center justify-center gap-12">
+                <div class="md:w-1/3 flex-shrink-0 flex justify-center" data-aos="fade-right" data-aos-delay="100">
+                    <div class="w-64 h-80 sm:w-72 sm:h-96 rounded-lg overflow-hidden shadow-2xl border-4 border-indigo-500/50 photo-interactive">
+                        <img src="myphoto.jpg" alt="A portrait of Harsh Singh Kshetrimayum" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400x500/1f2937/a78bfa?text=Image+Error';">
+                    </div>
+                </div>
+                <div class="md:w-2/3 max-w-2xl" data-aos="fade-left" data-aos-delay="200">
+                    <p class="text-gray-300 leading-relaxed mb-4">Hello! I'm Harsh, a student pursuing Bachelor of Technology (B.Tech.) in Computer Science and Engineering at Uttaranchal University, originally from Kakching, Manipur, India. I have a profound passion for technology and love bringing ideas to life, whether it's for the web or other digital platforms.</p>
+                    <p class="text-gray-300 leading-relaxed mb-4">My journey into the tech world is driven by a desire to create innovative and secure solutions. I enjoy tackling challenges and continuously learning about new technologies in Web Development, Cybersecurity,UI/UX Designing and Artificial Intelligence.</p>
+                    <p class="text-gray-300 leading-relaxed mb-4">Beyond my academic and technical pursuits, I am actively involved in Cultural and Events Committee of Uttaranchal Institute of Technology (UIT-CEC) at my university, where I contribute to planning, organizing, and managing various campus activities. I have a deep interest in Korean language and culture, which fuels my curiosity about global traditions and communication.</p>
+                    <p class="text-gray-300 leading-relaxed mb-4"></p>In addition, I enjoy creative hobbies such as playing the guitar, photography, and video editing. These activities allow me to express myself artistically and enhance my storytelling and visual communication skills.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="experience" class="section py-20">
+            <h2 class="text-3xl font-bold text-center mb-12 text-white" data-aos="zoom-in"><u>Experience & Internships</u></h2>
+            <div class="max-w-3xl mx-auto">
+                <div class="border-l-2 border-indigo-500 pl-8 space-y-12">
+                    <div class="relative" data-aos="fade-up">
+                        <div class="absolute -left-10 top-1 w-6 h-6 bg-indigo-600 rounded-full border-4 border-gray-900"></div>
+                        <h3 class="text-xl font-bold text-white">Cybersecurity Analyst Job Simulation</h3>
+                        <p class="text-indigo-400 font-medium">Tata Group (Forage) – Remote (India)</p>
+                        <p class="text-gray-500 text-sm mb-3">July 2025</p>
+                        <ul class="list-disc list-inside text-gray-300 space-y-2">
+                            <li>Completed an Identity and Access Management (IAM) simulation with the TCS Cybersecurity Consulting team.</li>
+                            <li>Gained expertise in IAM principles, cybersecurity best practices, and strategic business alignment.</li>
+                            <li>Practiced documenting and presenting technical concepts clearly and effectively.</li>
+                        </ul>
+                    </div>
+                    <div class="relative" data-aos="fade-up">
+                        <div class="absolute -left-10 top-1 w-6 h-6 bg-indigo-600 rounded-full border-4 border-gray-900"></div>
+                        <h3 class="text-xl font-bold text-white">Web Design and Development Intern</h3>
+                        <p class="text-indigo-400 font-medium">Internship Studio – Remote (Pune, Maharashtra, India)</p>
+                        <p class="text-gray-500 text-sm mb-3">Aug 2024 – Nov 2024</p>
+                        <ul class="list-disc list-inside text-gray-300 space-y-2">
+                            <li>Built responsive web pages using HTML, CSS, JavaScript, Bootstrap and ReactJS.</li>
+                            <li>Developed interactive UI components and optimized performance for various devices.</li>
+                            <li>Collaborated using Git/GitHub, participated in code reviews, and implemented feedback.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="section py-20">
+            <h2 class="text-3xl font-bold text-center mb-12 text-white" data-aos="fade-up"><u>My Projects</u></h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="project-card-interactive bg-gray-800 rounded-lg overflow-hidden shadow-lg" data-aos="fade-up" data-aos-delay="100">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 text-white">Responsive Calculator</h3>
+                        <p class="text-gray-400 mb-4">A fully functional web-based calculator built with HTML, CSS, and JavaScript, featuring a responsive UI and animated button effects.</p>
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            <span class="text-xs bg-indigo-900 text-indigo-300 py-1 px-2 rounded-full">HTML</span>
+                            <span class="text-xs bg-indigo-900 text-indigo-300 py-1 px-2 rounded-full">CSS</span>
+                            <span class="text-xs bg-indigo-900 text-indigo-300 py-1 px-2 rounded-full">JavaScript</span>
+                        </div>
+                        <div class="flex space-x-4 mt-5">
+                            <a href="https://hskshetri.github.io/Responsive-Calculator/" target="_blank" rel="noopener noreferrer" class="text-indigo-400 hover:text-indigo-300 transition-colors font-medium">View</a>
+                            <a href="https://github.com/hskshetri/Responsive-Calculator.git" target="_blank" rel="noopener noreferrer" class="text-indigo-400 hover:text-indigo-300 transition-colors font-medium">Source Code</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-card-interactive bg-gray-800 rounded-lg overflow-hidden shadow-lg" data-aos="fade-up" data-aos-delay="200">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 text-white">CirrusCtrl</h3>
+                        <p class="text-gray-400 mb-4">CirrusCtrl is a powerful, web-based tool designed for system administrators, developers, and DevOps engineers to monitor, manage, and troubleshoot systems in real-time, all from a centralized dashboard.</p>
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            <span class="text-xs bg-indigo-900 text-indigo-300 py-1 px-2 rounded-full">Python</span>
+                            <span class="text-xs bg-indigo-900 text-indigo-300 py-1 px-2 rounded-full">Flask</span>
+                            <span class="text-xs bg-indigo-900 text-indigo-300 py-1 px-2 rounded-full">Psutil</span>
+                            <span class="text-xs bg-indigo-900 text-indigo-300 py-1 px-2 rounded-full">Socket.IO</span>
+                            <span class="text-xs bg-indigo-900 text-indigo-300 py-1 px-2 rounded-full">Chart.js</span>
+
+                        </div>
+                        <div class="flex space-x-4 mt-5">
+                            <a href="https://cirrusctrl.cyberfascinate.com/"  target="_blank" rel="noopener noreferrer" class="text-indigo-400 hover:text-indigo-300 transition-colors font-medium">View</a>
+                            <a href="https://github.com/hskshetri/CirrusCtrl"  target="_blank" rel="noopener noreferrer" class="text-indigo-400 hover:text-indigo-300 transition-colors font-medium">Source Code</a>
+                        </div>
+                    </div>
+                </div>
+                </div>
+        </section>
+
+        <section id="skills" class="section py-20">
+            <h2 class="text-3xl font-bold text-center mb-12 text-white" data-aos="fade-up"><u>Technical Skills</u></h2>
+            
+            <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-16 items-start">
+                
+                <div class="w-full">
+                    <h3 class="text-lg font-semibold text-center text-indigo-400 mb-4" data-aos="fade-up">Languages & Frameworks</h3>
+                    <div class="flex flex-wrap justify-center gap-4">
+                        <div class="skill-tag-interactive flex flex-col items-center justify-center p-4 bg-gray-800 rounded-lg animate-float-gentle cursor-pointer w-28 h-28" style="animation-delay: 0s;" data-skill="Python" data-percentage="60">
+                            <img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/python.svg" alt="Python" class="w-10 h-10 mb-2 skill-icon" />
+                            <span class="text-gray-300">Python</span>
+                        </div>
+                         <div class="skill-tag-interactive flex flex-col items-center justify-center p-4 bg-gray-800 rounded-lg animate-float-gentle cursor-pointer w-28 h-28" style="animation-delay: 0.7s;" data-skill="Java" data-percentage="75">
+                            <img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/java.svg" alt="Java" class="w-10 h-10 mb-2 skill-icon" />
+                            <span class="text-gray-300">Java</span>
+                        </div>
+                         <div class="skill-tag-interactive flex flex-col items-center justify-center p-4 bg-gray-800 rounded-lg animate-float-gentle cursor-pointer w-28 h-28" style="animation-delay: 1.4s;" data-skill="HTML/CSS" data-percentage="90">
+                            <img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/html5.svg" alt="HTML5" class="w-10 h-10 mb-2 skill-icon" />
+                            <span class="text-gray-300">HTML/CSS</span>
+                        </div>
+                         <div class="skill-tag-interactive flex flex-col items-center justify-center p-4 bg-gray-800 rounded-lg animate-float-gentle cursor-pointer w-28 h-28" style="animation-delay: 2.1s;" data-skill="JavaScript" data-percentage="50">
+                            <img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/javascript.svg" alt="JavaScript" class="w-10 h-10 mb-2 skill-icon" />
+                            <span class="text-gray-300">JavaScript</span>
+                        </div>
+                         <div class="skill-tag-interactive flex flex-col items-center justify-center p-4 bg-gray-800 rounded-lg animate-float-gentle cursor-pointer w-28 h-28" style="animation-delay: 2.8s;" data-skill="PHP" data-percentage="85">
+                            <img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/php.svg" alt="PHP" class="w-10 h-10 mb-2 skill-icon" />
+                            <span class="text-gray-300">PHP</span>
+                        </div>
+                         <div class="skill-tag-interactive flex flex-col items-center justify-center p-4 bg-gray-800 rounded-lg animate-float-gentle cursor-pointer w-28 h-28" style="animation-delay: 3.5s;" data-skill="ReactJS" data-percentage="50">
+                            <img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/react.svg" alt="ReactJS" class="w-10 h-10 mb-2 skill-icon" />
+                            <span class="text-gray-300">ReactJS</span>
+                        </div>
+                         <div class="skill-tag-interactive flex flex-col items-center justify-center p-4 bg-gray-800 rounded-lg animate-float-gentle cursor-pointer w-28 h-28" style="animation-delay: 4.2s;" data-skill="Bootstrap" data-percentage="30">
+                            <img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/bootstrap.svg" alt="Bootstrap" class="w-10 h-10 mb-2 skill-icon" />
+                            <span class="text-gray-300">Bootstrap</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="skill-chart-container" class="w-full md:row-start-1 md:row-span-2 flex flex-col items-center justify-center p-8 bg-gray-800 rounded-lg shadow-lg md:mt-16">
+                    <h3 id="skill-chart-title" class="text-2xl font-bold text-white mb-4">Touch a Skill</h3>
+                    <div class="relative w-48 h-48">
+                        <svg class="w-full h-full" viewBox="0 0 100 100">
+                            <circle class="text-gray-700" stroke-width="10" stroke="currentColor" fill="transparent" r="45" cx="50" cy="50" />
+                            <circle id="skill-progress-circle" class="text-indigo-500" stroke-width="10" stroke-linecap="round" stroke="currentColor" fill="transparent" r="45" cx="50" cy="50" />
+                        </svg>
+                        <span id="skill-chart-percentage" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl font-bold text-white">0%</span>
+                    </div>
+                </div>
+
+                <div class="w-full">
+                    <h3 class="text-lg font-semibold text-center text-indigo-400 mb-4" data-aos="fade-up">Tools & Technologies</h3>
+                    <div class="flex flex-wrap justify-center gap-4">
+                        <div class="skill-tag-interactive flex flex-col items-center justify-center p-4 bg-gray-800 rounded-lg animate-float-gentle cursor-pointer w-28 h-28" style="animation-delay: 4.9s;" data-skill="VS Code" data-percentage="80">
+                            <img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/visualstudiocode.svg" alt="VS Code" class="w-10 h-10 mb-2 skill-icon" />
+                            <span class="text-gray-300">VS Code</span>
+                        </div>
+                        <div class="skill-tag-interactive flex flex-col items-center justify-center p-4 bg-gray-800 rounded-lg animate-float-gentle cursor-pointer w-28 h-28" style="animation-delay: 5.6s;" data-skill="GitHub" data-percentage="60">
+                            <img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/github.svg" alt="GitHub" class="w-10 h-10 mb-2 skill-icon" />
+                            <span class="text-gray-300">GitHub</span>
+                        </div>
+                        <div class="skill-tag-interactive flex flex-col items-center justify-center p-4 bg-gray-800 rounded-lg animate-float-gentle cursor-pointer w-28 h-28" style="animation-delay: 6.3s;" data-skill="Figma" data-percentage="35">
+                            <img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/figma.svg" alt="Figma" class="w-10 h-10 mb-2 skill-icon" />
+                            <span class="text-gray-300">Figma</span>
+                        </div>
+                        <div class="skill-tag-interactive flex flex-col items-center justify-center p-4 bg-gray-800 rounded-lg animate-float-gentle cursor-pointer w-28 h-28" style="animation-delay: 7.0s;" data-skill="Canva" data-percentage="65">
+                            <img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/canva.svg" alt="Canva" class="w-10 h-10 mb-2 skill-icon" />
+                            <span class="text-gray-300">Canva</span>
+                        </div>
+                        <div class="skill-tag-interactive flex flex-col items-center justify-center p-4 bg-gray-800 rounded-lg animate-float-gentle cursor-pointer w-28 h-28" style="animation-delay: 7.7s;" data-skill="DaVinci Resolve" data-percentage="70">
+                            <img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/davinciresolve.svg" alt="DaVinci Resolve" class="w-10 h-10 mb-2 skill-icon" />
+                            <span class="text-gray-300 text-center text-sm">DaVinci Resolve</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="section py-20">
+            <h2 class="text-3xl font-bold text-center mb-4 text-white" data-aos="fade-up"><u>Get In Touch</u></h2>
+            <p class="text-center text-gray-400 max-w-md mx-auto mb-12" data-aos="fade-up" data-aos-delay="100">I'm currently seeking new opportunities and collaborations. My inbox is always open, whether you have a question or just want to say hi.</p>
+            <div class="text-center" data-aos="fade-up" data-aos-delay="200">
+                <a href="mailto:harshkshetri2002@gmail.com" target="_blank" rel="noopener noreferrer" class="bg-indigo-800 hover:bg-indigo-900 text-white font-bold py-4 px-8 rounded-lg transition-all duration-300 text-lg">Say Hello 👋🏻</a>
+                 <p class="text-center text-gray-500 text-sm mt-4" data-aos="fade-up" data-aos-delay="250">
+                    Clicking the button will open your default email client.
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-900 border-t border-gray-800">
+        <div class="container mx-auto px-6 py-8 text-center text-gray-500">
+            <div class="flex justify-center space-x-2 sm:space-x-6 mb-4">
+                <a href="mailto:harshkshetri2002@gmail.com" target="_blank" rel="noopener noreferrer" class="p-2 hover:text-indigo-400 transition-colors" aria-label="Email contact@hskshetri.me">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M2.25 5.25A3 3 0 015.25 2.25h13.5a3 3 0 013 3v13.5a3 3 0 01-3 3H5.25a3 3 0 01-3-3V5.25zM5.25 4.5a.75.75 0 00-.75.75v.032l6.98 4.26a2.25 2.25 0 002.04 0l6.98-4.26V5.25a.75.75 0 00-.75-.75H5.25zM4.5 18.75a.75.75 0 00.75.75h13.5a.75.75 0 00.75-.75V8.423l-7.22 4.4a3.75 3.75 0 01-3.56 0L4.5 8.423v10.327z" clip-rule="evenodd" />
+                    </svg>
+                </a>
+                <a href="https://github.com/hskshetri" target="_blank" rel="noopener noreferrer" class="p-2 hover:text-indigo-400 transition-colors" aria-label="GitHub">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12.013c0 4.418 2.865 8.167 6.839 9.492.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.06.069-.06 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.031-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.03 1.595 1.03 2.688 0 3.848-2.338 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.001 10.001 0 0022 12.013C22 6.477 17.523 2 12 2z" clip-rule="evenodd" /></svg>
+                </a>
+                <a href="https://www.linkedin.com/in/hskshetri/" target="_blank" rel="noopener noreferrer" class="p-2 hover:text-indigo-400 transition-colors" aria-label="LinkedIn">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M16.338 16.338H13.67V12.16c0-.995-.017-2.277-1.387-2.277-1.39 0-1.601 1.086-1.601 2.206v4.248H8.014v-8.59h2.559v1.174h.037c.356-.675 1.227-1.387 2.526-1.387 2.703 0 3.203 1.778 3.203 4.092v4.711zM5.005 6.575a1.548 1.548 0 11-.003-3.096 1.548 1.548 0 01.003 3.096zm-1.337 9.763H6.34v-8.59H3.667v8.59zM17.668 1H6.328C3.965 1 2 2.985 2 5.337v13.326C2 21.015 3.965 23 6.328 23h11.34c2.364 0 4.332-1.985 4.332-4.337V5.337C22 2.985 20.032 1 17.668 1z" clip-rule="evenodd" /></svg>
+                </a>
+                <a href="https://www.instagram.com/harsh_kshetrimayum/" target="_blank" rel="noopener noreferrer" class="p-2 hover:text-indigo-400 transition-colors" aria-label="Instagram">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2c-2.717 0-3.056.01-4.122.06-1.065.05-1.79.217-2.428.465a4.902 4.902 0 00-1.772 1.153 4.902 4.902 0 00-1.153 1.772c-.247.638-.415 1.363-.465 2.428C2.01 8.944 2 9.283 2 12s.01 3.056.06 4.122c.05 1.065.218 1.79.465 2.428a4.902 4.902 0 001.153 1.772 4.902 4.902 0 001.772 1.153c.638.247 1.363.415 2.428.465C8.944 21.99 9.283 22 12 22s3.056-.01 4.122-.06c1.065-.05 1.79-.218 2.428-.465a4.902 4.902 0 001.772-1.153 4.902 4.902 0 001.153-1.772c.247-.638.415-1.363.465-2.428.05-1.066.06-1.405.06-4.122s-.01-3.056-.06-4.122c-.05-1.065-.218-1.79-.465-2.428a4.902 4.902 0 00-1.153-1.772 4.902 4.902 0 00-1.772-1.153c-.638-.247-1.363-.415-2.428-.465C15.056 2.01 14.717 2 12 2zm0 1.802c2.67 0 2.987.01 4.042.059.975.044 1.504.207 1.857.344.467.182.86.399 1.25.789.39.39.607.783.789 1.25.137.353.3.882.344 1.857.048 1.055.058 1.372.058 4.042s-.01 2.987-.058 4.042c-.044.975-.207 1.504-.344 1.857a3.097 3.097 0 01-.789 1.25 3.097 3.097 0 01-1.25.789c-.353.137-.882.3-1.857.344-1.055.048-1.372.058-4.042.058s-2.987-.01-4.042-.058c-.975-.044-1.504-.207-1.857-.344a3.097 3.097 0 01-1.25-.789 3.097 3.097 0 01-.789-1.25c-.137-.353-.3-.882-.344-1.857C3.81 15.013 3.802 14.698 3.802 12s.01-2.987.058-4.042c.044-.975.207-1.504.344-1.857.182-.466.399-.86.789-1.25.39-.39.783-.607 1.25-.789.353-.137.882-.3 1.857-.344C9.013 3.81 9.328 3.802 12 3.802zM12 8.25a3.75 3.75 0 100 7.5 3.75 3.75 0 000-7.5zm0 1.802a1.948 1.948 0 110 3.896 1.948 1.948 0 010-3.896zM16.802 6.198a.938.938 0 100 1.876.938.938 0 000-1.876z" clip-rule="evenodd" /></svg>
+                </a>
+                <a href="https://www.facebook.com/harsh.kshetrimayum.3" target="_blank" rel="noopener noreferrer" class="p-2 hover:text-indigo-400 transition-colors" aria-label="Facebook">
+                   <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33V21.878A10.001 10.001 0 0022 12z" clip-rule="evenodd" /></svg>
+                </a>
+            </div>
+            <p>Designed & Built by Harsh Singh Kshetrimayum</p>
+            <p class="text-sm mt-2">&copy; 2025 Harsh Singh Kshetrimayum. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            AOS.init({ duration: 800, once: true });
+
+            // --- Disable right-click context menu ---
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+            });
+
+            const spotlight = document.getElementById('cursor-spotlight');
+            if (spotlight) {
+                document.addEventListener('mousemove', (e) => {
+                    window.requestAnimationFrame(() => {
+                        spotlight.style.left = e.clientX + 'px';
+                        spotlight.style.top = e.clientY + 'px';
+                    });
+                });
+            }
+
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenuButton && mobileMenu) {
+                const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+                const toggleMenu = () => mobileMenu.classList.toggle('hidden');
+                mobileMenuButton.addEventListener('click', toggleMenu);
+                mobileMenuLinks.forEach(link => link.addEventListener('click', toggleMenu));
+            }
+
+            /* === RESPONSIVE SKILL CHART SCRIPT (TOUCH & HOVER) === */
+            const skillTags = document.querySelectorAll('.skill-tag-interactive');
+            const chartTitle = document.getElementById('skill-chart-title');
+            const progressCircle = document.getElementById('skill-progress-circle');
+            const chartPercentageText = document.getElementById('skill-chart-percentage');
+            if (progressCircle) {
+                const radius = progressCircle.r.baseVal.value;
+                const circumference = 2 * Math.PI * radius;
+                progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+                let activeSkillTag = null;
+                let countUpInterval;
+
+                const updateChart = (tag) => {
+                    clearInterval(countUpInterval);
+                    if (activeSkillTag) {
+                        activeSkillTag.classList.remove('is-active');
+                    }
+
+                    if (tag) {
+                        activeSkillTag = tag;
+                        activeSkillTag.classList.add('is-active');
+                        const skill = tag.dataset.skill;
+                        const targetPercentage = parseInt(tag.dataset.percentage, 10);
+                        const offset = circumference - (targetPercentage / 100) * circumference;
+                        progressCircle.style.strokeDashoffset = offset;
+                        chartTitle.textContent = skill;
+                        
+                        let currentPercentage = 0;
+                        chartPercentageText.textContent = `${currentPercentage}%`; // Start from 0
+                        countUpInterval = setInterval(() => {
+                            if (currentPercentage < targetPercentage) {
+                                currentPercentage++;
+                                chartPercentageText.textContent = `${currentPercentage}%`;
+                            } else {
+                                clearInterval(countUpInterval);
+                            }
+                        }, 10);
+                    } else {
+                        activeSkillTag = null;
+                        progressCircle.style.strokeDashoffset = circumference;
+                        chartTitle.textContent = 'Touch a Skill';
+                        chartPercentageText.textContent = '0%';
+                    }
+                };
+
+                skillTags.forEach(tag => {
+                    // Desktop: Hover controls
+                    tag.addEventListener('mouseenter', () => {
+                        if (window.innerWidth >= 768) updateChart(tag);
+                    });
+                    tag.addEventListener('mouseleave', () => {
+                        if (window.innerWidth >= 768) updateChart(null);
+                    });
+
+                    // Mobile: Tap controls
+                    tag.addEventListener('click', (e) => {
+                        if (window.innerWidth < 768) {
+                            e.stopPropagation();
+                            updateChart(tag === activeSkillTag ? null : tag);
+                        }
+                    });
+                });
+
+                // Reset chart if clicking outside on mobile
+                document.addEventListener('click', () => {
+                    if (window.innerWidth < 768 && activeSkillTag) {
+                        updateChart(null);
+                    }
+                });
+
+                // Initialize chart
+                updateChart(null);
+            }
+
+            // --- SCRIPT FOR HERO BACKGROUND ANIMATION ---
+            const container = document.getElementById('hero-bg-animation');
+            if (container && typeof THREE !== 'undefined') {
+                const scene = new THREE.Scene();
+                const camera = new THREE.PerspectiveCamera(75, container.offsetWidth / container.offsetHeight, 0.1, 1000);
+                const renderer = new THREE.WebGLRenderer({ alpha: true });
+                renderer.setSize(container.offsetWidth, container.offsetHeight);
+                container.appendChild(renderer.domElement);
+                const iconSources = [
+                    { type: 'image', value: 'https://cdn.simpleicons.org/html5/FFFFFF', fallback: 'HTML' },{ type: 'image', value: 'https://cdn.simpleicons.org/javascript/FFFFFF', fallback: 'JS' },{ type: 'image', value: 'https://cdn.simpleicons.org/react/FFFFFF', fallback: 'React' },{ type: 'image', value: 'https://cdn.simpleicons.org/python/FFFFFF', fallback: 'Python' },{ type: 'image', value: 'https://cdn.simpleicons.org/php/FFFFFF', fallback: 'PHP' },{ type: 'image', value: 'https://cdn.simpleicons.org/bootstrap/FFFFFF', fallback: 'Bootstrap' },{ type: 'image', value: 'https://cdn.simpleicons.org/figma/FFFFFF', fallback: 'Figma' },{ type: 'image', value: 'https://cdn.simpleicons.org/canva/FFFFFF', fallback: 'Canva' },{ type: 'image', value: 'https://cdn.simpleicons.org/davinciresolve/FFFFFF', fallback: 'DaVinci' },{ type: 'emoji', value: '🎸' }, { type: 'emoji', value: '🖱️' },{ type: 'emoji', value: '⌨️' }, { type: 'emoji', value: '💻' }
+                ];
+                const sprites = [];
+                const textureLoader = new THREE.TextureLoader();
+                textureLoader.setCrossOrigin('anonymous');
+                function addSprite(texture) {
+                    const material = new THREE.SpriteMaterial({ map: texture, alphaTest: 0.5 });
+                    const sprite = new THREE.Sprite(material);
+                    sprite.position.x = (Math.random() - 0.5) * 20;
+                    sprite.position.y = (Math.random() - 0.5) * 20;
+                    sprite.position.z = (Math.random() - 0.5) * 10;
+                    sprite.velocity = new THREE.Vector3((Math.random() - 0.5) * 0.01, (Math.random() - 0.5) * 0.01, 0);
+                    sprites.push(sprite);
+                    scene.add(sprite);
+                }
+                function createTextTexture(text) {
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+                    canvas.width = 128; canvas.height = 128;
+                    context.font = 'Bold 48px Inter';
+                    context.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                    context.textAlign = 'center'; context.textBaseline = 'middle';
+                    context.fillText(text, 64, 64);
+                    return new THREE.CanvasTexture(canvas);
+                }
+                for (let i = 0; i < 30; i++) {
+                    const source = iconSources[Math.floor(Math.random() * iconSources.length)];
+                    if (source.type === 'image') {
+                        textureLoader.load(source.value, addSprite, undefined, 
+                            () => { addSprite(createTextTexture(source.fallback)); }
+                        );
+                    } else {
+                        addSprite(createTextTexture(source.value));
+                    }
+                }
+                camera.position.z = 10;
+                function animate() {
+                    requestAnimationFrame(animate);
+                    sprites.forEach(sprite => {
+                        sprite.position.add(sprite.velocity);
+                        if (sprite.position.y > 10 || sprite.position.y < -10) { sprite.position.y *= -1; }
+                        if (sprite.position.x > 10 || sprite.position.x < -10) { sprite.position.x *= -1; }
+                    });
+                    renderer.render(scene, camera);
+                }
+                animate();
+                window.addEventListener('resize', () => {
+                    camera.aspect = container.offsetWidth / container.offsetHeight;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(container.offsetWidth, container.offsetHeight);
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>
